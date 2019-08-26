@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">GolliatFinances</string>
+    <string name="NAMESPACE">http://ISTP1.Service.Contracts.Service</string>
+    <string name="URL_SERVICE">http://ds.dyndns.org:9000/ServicioPublicoCredito</string>
+    <string name="METHOD_OEC">ObtenerEstadoCliente</string>
+    <string name="SOAP_ACTION_OEC">http://ISTP1.Service.Contracts.Service/IServicioPublicoCredito/ObtenerEstadoCliente</string>
+    <string name="cod_fin_name">codigoFinanciera</string>
+    <string name="dni_name">dni</string>
+    <string name="codigo_financiera">"67f583b3-8858-422f-b207-611634105a90"</string>
+</resources>
