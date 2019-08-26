@@ -27,9 +27,15 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
         primeraCuota()
     }
 
-    fun grabarPago(montoPagado: BigDecimal) {
+    fun grabarPago(montoPagado: BigDecimal): Boolean {
+
+        if (obtenerSaldos().last().saldoImpago < montoPagado) {
+            return false
+        }
+
         pagos.add(Pago(LocalDate.now(), montoPagado))
         determinarSaldos()
+        return true
     }
 
     fun totalAPagar(): BigDecimal {
@@ -55,6 +61,8 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
         pagos.clear()
 
+        estado = Estado.PENDIENTE
+
         if (plan.modalidadDePago == Plan.Modalidad.ADELANTADA) {
 
             pagos.add(Pago(timeStamp, cuotas[0].montoInicial))
@@ -72,12 +80,12 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
     fun montoPrimeraCuota(): BigDecimal {
 
         try {
-            return monto.divide(plan.numeroDeCuotas.toBigDecimal())
+            return monto.divide(plan.numeroDeCuotas().toBigDecimal())
                 .setScale(2, RoundingMode.HALF_EVEN)
 
         } catch (e: ArithmeticException) {
 
-            return ((monto.toDouble() / plan.numeroDeCuotas).times(100)).roundToInt().div(100)
+            return ((monto.toDouble() / plan.numeroDeCuotas()).times(100)).roundToInt().div(100)
                 .toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
         }
     }
@@ -93,7 +101,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
         calendar = calendar.withDayOfMonth(10)
 
-        for (i in 0..plan.numeroDeCuotas) {
+        for (i in 0..plan.numeroDeCuotas()) {
 
             calendar = calendar.plusMonths(1)
 
@@ -151,7 +159,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
     }
 
     fun obtenerSaldos(): ArrayList<CuotaInforme> {
-        if(lastInforme.isEmpty()){
+        if (lastInforme.isEmpty()) {
             return determinarSaldos()
         }
         return lastInforme
@@ -259,7 +267,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
                             informe.montoMoroso + saldoCuota.multiply((interesMoroso) * diferenciaDias.toBigDecimal())
                         informe.cantidadDeDiasMoroso = diferenciaDias.toInt()
 
-                        if(diferenciaDias > 14){
+                        if (diferenciaDias > 14) {
                             estado = Estado.MOROSO
                         }
 
@@ -293,6 +301,10 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
             informe.saldoImpago = saldoCuota + interesFueraDeTermino
 
             lastInforme.add(informe)
+
+            if (lastInforme.last().estado == CuotaInforme.Estado.PAGADA) {
+                estado = Estado.PENDIENTE_DE_FINALIZACION
+            }
 
         }
 

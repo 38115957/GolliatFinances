@@ -22,18 +22,10 @@ class TestCredito : Application() {
     @Test
     fun testCreditoADELANTADA() {
 
-        val calendar = LocalDate.now()
-
         val plan =
             Plan("plan1", 15, Plan.Modalidad.ADELANTADA, 0.015.toBigDecimal(), 156.toBigDecimal())
 
         val credito = Credito(0.035.toBigDecimal(), plan, 10000.00)
-
-        for (i in 1..100) {
-            val pago = Pago(calendar.plusDays(i.toLong()), 150.15.toBigDecimal())
-            credito.pagos.add(pago)
-
-        }
 
         Assert.assertEquals(Plan.Modalidad.ADELANTADA, credito.plan.modalidadDePago)
 
@@ -42,23 +34,11 @@ class TestCredito : Application() {
     @Test
     fun testCreditoVENCIDA() {
 
-        val calendar = LocalDate.now()
-
         val plan =
             Plan("plan1", 10, Plan.Modalidad.VENCIDA, 0.015.toBigDecimal(), 156.toBigDecimal())
 
         val credito = Credito(0.035.toBigDecimal(), plan, 100000.00)
-        credito.timeStamp = calendar.minusMonths(8)
-        credito.init()
 
-        for (i in 1..250 step 4) {
-            credito.pagos.add(
-                Pago(
-                    calendar.minusMonths(8).plusDays(i.toLong()),
-                    1500.15.toBigDecimal()
-                )
-            )
-        }
         Assert.assertEquals(Plan.Modalidad.VENCIDA, credito.plan.modalidadDePago)
 
     }
@@ -86,7 +66,7 @@ class TestCredito : Application() {
 
         var informe = credito.obtenerSaldos()
 
-        Assert.assertEquals(11793.77788, informe.last().saldoImpago.toDouble(),0.1)
+        Assert.assertEquals(11793.77788, informe.last().saldoImpago.toDouble(), 0.1)
 
     }
 
@@ -101,12 +81,62 @@ class TestCredito : Application() {
         val credito = Credito(0.035.toBigDecimal(), plan, 10000.00)
         credito.timeStamp = calendar.minusMonths(3)
         credito.init()
-        
+
         credito.obtenerSaldos()
 
         Assert.assertEquals(Credito.Estado.MOROSO, credito.estado)
 
     }
 
+    @Test
+    fun testCreditoSobrePago() {
+
+        val plan =
+            Plan("plan1", 3, Plan.Modalidad.VENCIDA, 0.015.toBigDecimal(), 500.toBigDecimal())
+
+        val credito = Credito(0.035.toBigDecimal(), plan, 10000.00)
+
+        Assert.assertEquals(false,  credito.grabarPago(150000.toBigDecimal()))
+
+    }
+
+    @Test
+    fun testCreditoFinalizado() {
+
+        val calendar = LocalDate.now()
+
+        val plan =
+            Plan("plan1", 3, Plan.Modalidad.VENCIDA, 0.015.toBigDecimal(), 500.toBigDecimal())
+
+        val credito = Credito(0.035.toBigDecimal(), plan, 10000.00)
+        credito.timeStamp = calendar.minusMonths(3)
+        credito.init()
+
+        for (i in 1..120) {
+            credito.pagos.add(
+                Pago(
+                    calendar.minusMonths(8).plusDays(i.toLong()),
+                    1500.15.toBigDecimal()
+                )
+            )
+        }
+
+        credito.obtenerSaldos()
+
+        Assert.assertEquals(Credito.Estado.PENDIENTE_DE_FINALIZACION, credito.estado)
+
+    }
+
+    @Test
+    fun testPlanMenosDeDosCuotasAdelantada() {
+
+        val plan =
+            Plan("plan1", 1, Plan.Modalidad.ADELANTADA, 0.015.toBigDecimal(), 500.toBigDecimal())
+
+        val credito = Credito(0.035.toBigDecimal(), plan, 10000.00)
+
+        Assert.assertEquals(2, credito.plan.numeroDeCuotas())
+
+    }
 
 }

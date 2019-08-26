@@ -4,11 +4,30 @@ import java.math.BigDecimal
 
 class Plan {
 
-    var identificadorPlan ="idPlan"
-    var numeroDeCuotas = 0
+    var identificadorPlan = "idPlan"
+    private var numeroDeCuotas = 2
     var modalidadDePago = Modalidad.NOT_SET
     var porcentajeInteresMensual = BigDecimal.ZERO
     var costoAdministrativo = BigDecimal.ZERO
+
+    fun numeroDeCuotas(): Int {
+        return numeroDeCuotas
+    }
+
+    fun numeroDeCuotas(num: Int): Boolean {
+        if (!modalidadDePago.equals(Modalidad.VENCIDA)) {
+            if (num > 1) {
+                numeroDeCuotas = num
+                return true
+            }
+            numeroDeCuotas = 2
+            return false
+        } else {
+            numeroDeCuotas = num
+            return true
+
+        }
+    }
 
     constructor(
         identificadorPlan: String,
@@ -17,11 +36,13 @@ class Plan {
         porcentajeInteresMensual: BigDecimal,
         costoAdministrativo: BigDecimal
     ) {
+
         this.identificadorPlan = identificadorPlan
-        this.numeroDeCuotas = numeroDeCuotas
         this.modalidadDePago = modalidadDePago
         this.porcentajeInteresMensual = porcentajeInteresMensual
         this.costoAdministrativo = costoAdministrativo
+
+        numeroDeCuotas(numeroDeCuotas)
     }
 
     constructor(identificadorPlan: String) {
