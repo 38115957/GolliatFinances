@@ -3,6 +3,7 @@ package com.example.golliatfinances.soapConnector
 import org.ksoap2.serialization.KvmSerializable
 import org.ksoap2.serialization.PropertyInfo
 import java.util.*
+import org.threeten.bp.LocalDate
 
 /*
     <xs:complexType name="ResultadoOperacion">
@@ -19,9 +20,18 @@ class ResultadoOperacion : KvmSerializable {
     var error = ""
     var operacionValida = false
 
+    constructor(error: String, operacionValida: Boolean) {
+        this.error = error
+        this.operacionValida = operacionValida
+    }
+
+    constructor()
+
     fun getName(): String {
         return "ResultadoOperacion"
     }
+
+
 
     override fun getPropertyInfo(index: Int, arg1: Hashtable<*, *>, info: PropertyInfo) {
         when (index) {

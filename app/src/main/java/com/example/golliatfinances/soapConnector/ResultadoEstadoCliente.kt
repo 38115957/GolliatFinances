@@ -2,6 +2,9 @@ package com.example.golliatfinances.soapConnector
 
 import org.ksoap2.serialization.KvmSerializable
 import org.ksoap2.serialization.PropertyInfo
+import org.threeten.bp.LocalDate
+import org.threeten.bp.chrono.ChronoLocalDate
+import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
 
 
@@ -28,6 +31,17 @@ class ResultadoEstadoCliente : KvmSerializable {
     var ConsultaValida = false
     var Error: String? = ""
     var dni: Int = 0
+    var timeStamp = LocalDate.now()
+
+    fun estaDesactualizado(): Boolean {
+
+        if (ChronoUnit.HOURS.between(timeStamp, LocalDate.now()) > 5){
+
+            return true
+
+        }
+        return false
+    }
 
     constructor(
         TieneDeudas: Boolean,
@@ -41,9 +55,24 @@ class ResultadoEstadoCliente : KvmSerializable {
         this.Error = Error
     }
 
+
     constructor()
 
     constructor(dni: Int) {
+        this.dni = dni
+    }
+
+    constructor(
+        TieneDeudas: Boolean,
+        CantidadCreditosActivos: Int,
+        ConsultaValida: Boolean,
+        Error: String?,
+        dni: Int
+    ) {
+        this.TieneDeudas = TieneDeudas
+        this.CantidadCreditosActivos = CantidadCreditosActivos
+        this.ConsultaValida = ConsultaValida
+        this.Error = Error
         this.dni = dni
     }
 

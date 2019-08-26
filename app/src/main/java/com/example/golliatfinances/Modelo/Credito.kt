@@ -1,6 +1,7 @@
 package com.example.golliatfinances.Modelo
 
 import android.annotation.SuppressLint
+import com.google.gson.annotations.Expose
 import java.math.BigDecimal
 import java.math.RoundingMode
 import org.threeten.bp.LocalDate
@@ -15,6 +16,9 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
     var timeStamp = LocalDate.now()
     val cuotas = arrayListOf<Cuota>()
     val pagos = arrayListOf<Pago>()
+    val legajoEmpleado = 0
+
+    @Expose
     var lastInforme = arrayListOf<CuotaInforme>()
 
     init {
@@ -25,6 +29,13 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
     fun init() {
         generarCuotas()
         primeraCuota()
+    }
+
+    fun estaFinalizado(): Boolean {
+        if(estado.equals(Estado.FINALIZADO) or estado.equals(Estado.PENDIENTE_DE_FINALIZACION)){
+            return true
+        }
+        return false
     }
 
     fun grabarPago(montoPagado: BigDecimal): Boolean {
@@ -316,13 +327,14 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
         var resultado = ""
 
-        resultado += "Interes: " + interesMoroso + " \n"
-        resultado += "Monto otorgado: " + monto + " \n"
-        resultado += "Monto entregado: " + montoEntregado() + " \n"
+        resultado += "Interes: $interesMoroso \n"
+        resultado += "Monto otorgado: $monto \n"
+        resultado += "Monto entregado:  ${montoEntregado()}  \n"
+        resultado += "Legajo del empleado: $legajoEmpleado \n"
         resultado += "Total a pagar: " + totalAPagar() + " \n"
-        resultado += "Plan: " + plan.toString() + " \n"
-        resultado += "Estado: " + estado.toString() + " \n"
-        resultado += "Fecha creación: " + timeStamp.toString() + " \n"
+        resultado += "Plan: $plan \n"
+        resultado += "Estado: $estado \n"
+        resultado += "Fecha creación: $timeStamp \n"
         resultado += "Cuotas: \n"
 
         for (cuota in cuotas) {
@@ -342,6 +354,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
     enum class Estado {
         PENDIENTE, ACTIVO, FINALIZADO, MOROSO, PENDIENTE_DE_FINALIZACION, NOT_SET
     }
+
 
 
 }

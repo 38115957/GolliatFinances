@@ -38,7 +38,7 @@ class TestApi {
         envelope.setOutputSoapObject(request2)
         envelope.addMapping(NAMESPACE, "ResultadoEstadoCliente", ResultadoEstadoCliente().javaClass)
 
-        val androidHttpTransport = HttpTransportSE(URL)
+        val androidHttpTransport = HttpTransportSE(URL,200)
         var response = SoapObject();
 
         try {

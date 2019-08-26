@@ -1,5 +1,6 @@
 package com.example.golliatfinances.soapConnector
 
+import org.jetbrains.anko.doAsync
 import org.ksoap2.SoapEnvelope
 import org.ksoap2.serialization.SoapObject
 import org.ksoap2.serialization.SoapSerializationEnvelope
@@ -17,6 +18,10 @@ class ServicioPublicoCredito {
 
     fun obtenerEstadoCliente(dni: Int, codigoFinanciera: String): ResultadoEstadoCliente {
 
+        doAsync {
+
+
+        }
         /*
         ● string codigoFinanciera: código qué identifica a cada financiera. Se corresponde con el código de grupo (no confundir con el número de grupo).
         ● int dni: número de documento del cliente.
@@ -37,7 +42,7 @@ class ServicioPublicoCredito {
             ResultadoEstadoCliente().javaClass
         )
 
-        val androidHttpTransport = HttpTransportSE(url_service)
+        val androidHttpTransport = HttpTransportSE(url_service,2000)
         val response: SoapObject
 
 
@@ -55,7 +60,10 @@ class ServicioPublicoCredito {
             }
 
         } catch (e: Exception) {
-            e.printStackTrace()
+
+            return ResultadoEstadoCliente(false,-1,false,e.localizedMessage,dni)
+
+
         }
 
         return resultadoEstadoCliente
@@ -93,7 +101,7 @@ class ServicioPublicoCredito {
             ResultadoOperacion().javaClass
         )
 
-        val androidHttpTransport = HttpTransportSE(url_service)
+        val androidHttpTransport = HttpTransportSE(url_service,2000)
         val response: SoapObject
 
         try {
@@ -110,7 +118,7 @@ class ServicioPublicoCredito {
             }
 
         } catch (e: Exception) {
-            e.printStackTrace()
+            return ResultadoOperacion(e.localizedMessage,false)
         }
 
         return resultadoOperacion
@@ -145,7 +153,7 @@ class ServicioPublicoCredito {
             ResultadoOperacion().javaClass
         )
 
-        val androidHttpTransport = HttpTransportSE(url_service)
+        val androidHttpTransport = HttpTransportSE(url_service,2000)
         val response: SoapObject
 
         try {
@@ -162,7 +170,7 @@ class ServicioPublicoCredito {
             }
 
         } catch (e: Exception) {
-            e.printStackTrace()
+            return ResultadoOperacion(e.localizedMessage,false)
         }
 
         return resultadoOperacion
