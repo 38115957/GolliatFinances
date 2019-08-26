@@ -1,8 +1,7 @@
 package com.example.golliatfinances.Modelo
 import java.math.BigDecimal
-import java.time.LocalDate
 
-//import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalDate
 
 class Pago(val fecha: LocalDate, val montoPagado: BigDecimal){
 

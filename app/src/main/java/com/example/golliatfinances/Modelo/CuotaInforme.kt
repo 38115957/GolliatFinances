@@ -2,9 +2,10 @@ package com.example.golliatfinances.Modelo
 
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalDate
+import org.threeten.bp.LocalDate
 
 class CuotaInforme() {
+
 
     var montoInicial = BigDecimal.ZERO
     var cantidadDeDiasMoroso = 0

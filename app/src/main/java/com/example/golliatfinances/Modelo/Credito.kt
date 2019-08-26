@@ -1,11 +1,10 @@
 package com.example.golliatfinances.Modelo
 
-//import org.threeten.bp.LocalDate
 import android.annotation.SuppressLint
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
+import org.threeten.bp.LocalDate
+import org.threeten.bp.temporal.ChronoUnit
 import kotlin.math.roundToInt
 
 @SuppressLint("NewApi")
@@ -16,6 +15,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
     var timeStamp = LocalDate.now()
     val cuotas = arrayListOf<Cuota>()
     val pagos = arrayListOf<Pago>()
+    var lastInforme = arrayListOf<CuotaInforme>()
 
     init {
         generarCuotas()
@@ -29,6 +29,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
     fun grabarPago(montoPagado: BigDecimal) {
         pagos.add(Pago(LocalDate.now(), montoPagado))
+        determinarSaldos()
     }
 
     fun totalAPagar(): BigDecimal {
@@ -149,12 +150,19 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
     }
 
+    fun obtenerSaldos(): ArrayList<CuotaInforme> {
+        if(lastInforme.isEmpty()){
+            return determinarSaldos()
+        }
+        return lastInforme
+    }
+
 
     fun determinarSaldos(): ArrayList<CuotaInforme> {
 
         var contadorPago = 0
         var saldoCuota = BigDecimal.ZERO
-        val informes = arrayListOf<CuotaInforme>()
+        lastInforme.clear()
         var interesFueraDeTermino = BigDecimal.ZERO
 
         for (cuota in cuotas) {
@@ -251,6 +259,10 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
                             informe.montoMoroso + saldoCuota.multiply((interesMoroso) * diferenciaDias.toBigDecimal())
                         informe.cantidadDeDiasMoroso = diferenciaDias.toInt()
 
+                        if(diferenciaDias > 14){
+                            estado = Estado.MOROSO
+                        }
+
                     } else {
 
                         informe.cantidadDeDiasMoroso = 0
@@ -280,11 +292,11 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
             informe.fechaVencimiento = cuota.fechaVencimiento
             informe.saldoImpago = saldoCuota + interesFueraDeTermino
 
-            informes.add(informe)
+            lastInforme.add(informe)
 
         }
 
-        return informes
+        return lastInforme
 
     }
 

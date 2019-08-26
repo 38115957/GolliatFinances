@@ -1,9 +1,7 @@
 package com.example.golliatfinances.Modelo
 
-//import org.threeten.bp.LocalDate
 import java.math.BigDecimal
-import java.time.LocalDate
-
+import org.threeten.bp.LocalDate
 
 class Cuota(val fechaVencimiento: LocalDate, val montoInicial: BigDecimal) {
 
