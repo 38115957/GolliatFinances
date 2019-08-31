@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="cliente"
+            type="com.example.golliatfinances.modelo.Cliente" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activitys.GestionarCliente">
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/gestClienteNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:inputType="textPersonName"
+                android:text="@{cliente.nombres}"
+                app:met_autoValidate="true"
+                app:met_clearButton="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Nombre"
+                app:met_helperText="Ingrese el nombre del cliente" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/gestClienteApellido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:inputType="textPersonName"
+                android:text="@{cliente.apellidos}"
+                app:met_autoValidate="true"
+                app:met_clearButton="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Apellido"
+                app:met_helperText="Ingrese el apellido del cliente" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/gestClienteDomicilio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:inputType="textPersonName"
+                android:text="@{cliente.domicilio}"
+                app:met_autoValidate="true"
+                app:met_clearButton="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Domicilio"
+                app:met_helperText="Inserte el domicilio del cliente" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/gestClienteDocumento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:enabled="false"
+                android:inputType="number"
+                android:text="@{cliente.identificador}"
+                app:met_autoValidate="true"
+                app:met_clearButton="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="DNI"
+                app:met_helperTextAlwaysShown="true"
+                app:met_maxCharacters="8"
+                app:met_minCharacters="8" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/gestClienteTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:inputType="number"
+                android:text="@{cliente.telefono}"
+                app:met_autoValidate="true"
+                app:met_clearButton="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Telefono"
+                app:met_helperText="Ingrese el telefono del cliente" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/gestClienteSueldo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:inputType="number"
+                android:text="@{cliente.sueldo.toString()}"
+                app:met_autoValidate="true"
+                app:met_clearButton="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Sueldo"
+
+                app:met_helperText="ingrese el sueldo del cliente en pesos" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/primary"
+                android:onClick="save"
+                android:text="@string/guardar_cliente"
+                android:textColor="@color/icons" />
+
+
+        </LinearLayout>
+    </ScrollView>
+</layout>

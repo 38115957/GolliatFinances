@@ -1,4 +1,4 @@
-package com.example.golliatfinances.Modelo
+package com.example.golliatfinances.modelo
 
 import java.math.BigDecimal
 import java.math.RoundingMode

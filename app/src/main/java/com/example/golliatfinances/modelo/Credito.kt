@@ -1,4 +1,4 @@
-package com.example.golliatfinances.Modelo
+package com.example.golliatfinances.modelo
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
@@ -14,25 +14,20 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
     var estado = Estado.NOT_SET
     val monto = monto.toBigDecimal()
     var timeStamp = LocalDate.now()
-    val cuotas = arrayListOf<Cuota>()
+    //val cuotas = arrayListOf<Cuota>()
     val pagos = arrayListOf<Pago>()
     val legajoEmpleado = 0
 
     @Expose
     var lastInforme = arrayListOf<CuotaInforme>()
 
-    init {
-        generarCuotas()
-        primeraCuota()
-    }
 
-    fun init() {
-        generarCuotas()
-        primeraCuota()
+    init {
+        primeraCuota(generarCuotas())
     }
 
     fun estaFinalizado(): Boolean {
-        if(estado.equals(Estado.FINALIZADO) or estado.equals(Estado.PENDIENTE_DE_FINALIZACION)){
+        if (estado.equals(Estado.FINALIZADO) or estado.equals(Estado.PENDIENTE_DE_FINALIZACION)) {
             return true
         }
         return false
@@ -49,28 +44,20 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
         return true
     }
 
-    fun totalAPagar(): BigDecimal {
-
-        var contador = BigDecimal.ZERO
-        cuotas.forEach { cuota: Cuota -> contador = contador.plus(cuota.montoInicial) }
-        return contador
-    }
 
     fun montoEntregado(): BigDecimal {
         if (plan.modalidadDePago == Plan.Modalidad.ADELANTADA) {
 
-            return monto - cuotas[0].montoInicial
+            return monto - montoPrimeraCuota()
 
         } else {//VENCIDA
 
-            return monto - plan.costoAdministrativo
+            return monto - plan.costoAdministrativo.multiply(monto)
 
         }
     }
 
-    fun primeraCuota() {
-
-        pagos.clear()
+    fun primeraCuota(cuotas: ArrayList<Cuota>): ArrayList<Cuota> {
 
         estado = Estado.PENDIENTE
 
@@ -80,11 +67,11 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
         } else if (plan.modalidadDePago == Plan.Modalidad.VENCIDA) {
 
-            cuotas.add(0, Cuota(timeStamp.plusDays(1), plan.costoAdministrativo))
-
-            pagos.add(Pago(timeStamp, plan.costoAdministrativo))
+            pagos.add(Pago(timeStamp, plan.costoAdministrativo.multiply(monto)))
 
         }
+
+        return cuotas
 
     }
 
@@ -101,10 +88,31 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
         }
     }
 
-    @SuppressLint("NewApi")
-    fun generarCuotas() {
+    fun totalAPagar(): BigDecimal {
 
-        cuotas.clear()
+        var montoCuotaBase = montoPrimeraCuota();
+
+        var contador = BigDecimal.ZERO
+
+        for (i in 0..plan.numeroDeCuotas()) {
+
+            contador +=
+                montoCuotaBase.multiply(plan.porcentajeInteresMensual.plus(BigDecimal.ONE))
+                    .setScale(2, RoundingMode.HALF_EVEN)
+
+        }
+
+        return contador
+
+    }
+
+    fun generarCuotas(): ArrayList<Cuota> {
+
+        var cuotas = arrayListOf<Cuota>()
+
+        if (plan.modalidadDePago.equals(Plan.Modalidad.VENCIDA)) {
+            cuotas.add(0, Cuota(timeStamp.plusDays(1), plan.costoAdministrativo.multiply(monto)))
+        }
 
         var montoCuotaBase = montoPrimeraCuota();
 
@@ -124,11 +132,13 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
         }
 
+        return cuotas
+
     }
 
 
     fun generarPago(saldos: BigDecimal, contadorPago: Int): Pago {
-        if (saldos < BigDecimal.ZERO) { //si el pago
+        if (menorZero(saldos)) { //si el pago es menor a 0, añade un pago parcial
             return Pago(
                 pagos[contadorPago].fecha, pagos[contadorPago].montoPagado + saldos
             )
@@ -150,16 +160,21 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
         return comparar > BigDecimal.ZERO
     }
 
-    fun MenorZero(comparar: BigDecimal): Boolean {
+    fun menorZero(comparar: BigDecimal): Boolean {
         return comparar < BigDecimal.ZERO
     }
 
     fun compararTamañoFechaZero(contadorPago: Int, cuota: Cuota, comparar: BigDecimal): Boolean {
 
-        return comprobarTamaño(contadorPago) and comprobarFechas(
-            contadorPago,
-            cuota
-        ) and mayorZero(comparar)
+        if (comprobarTamaño(contadorPago)) {
+            return comprobarFechas(
+                contadorPago,
+                cuota
+            ) and mayorZero(comparar)
+        } else {
+            return false
+        }
+
 
     }
 
@@ -179,6 +194,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
     fun determinarSaldos(): ArrayList<CuotaInforme> {
 
+        val cuotas = generarCuotas()
         var contadorPago = 0
         var saldoCuota = BigDecimal.ZERO
         lastInforme.clear()
@@ -188,7 +204,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
             val informe = CuotaInforme()
 
-            if (MenorZero(saldoCuota + interesFueraDeTermino)) {
+            if (menorZero(saldoCuota + interesFueraDeTermino)) {
 
                 informe.pagos.add(
                     Pago(
@@ -198,9 +214,16 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
                 )
                 //Si hubiese saldos restantes del último pago, los añade como un pago parcial en esta cuota
 
+                saldoCuota = cuota.montoInicial + saldoCuota + interesFueraDeTermino
+                //Añade el saldo restante del pago sobre la última cuota pagada, si es que hubiese
+
+            } else {
+                saldoCuota = cuota.montoInicial
+                //Si el saldo es mayor de cero se descarta
+
             }
-            saldoCuota = cuota.montoInicial + saldoCuota + interesFueraDeTermino
-            //Añade el saldo restante del pago sobre la última cuota pagada, si es que hubiese
+
+
 
             interesFueraDeTermino = BigDecimal.ZERO //reinicia el monto extra por pago a destiempo
 
@@ -297,11 +320,14 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
                 else -> informe.estado = CuotaInforme.Estado.VENCIDA
             }
 
-            if (cuota.fechaVencimiento.isAfter(LocalDate.now())) {
+            if (cuota.fechaVencimiento.isAfter(LocalDate.now()) and !informe.estado.equals(
+                    CuotaInforme.Estado.PAGADA
+                )
+            ) {
                 informe.estado = CuotaInforme.Estado.NO_VENCIDA
             }
 
-            if (saldoCuota + interesFueraDeTermino <= BigDecimal.ZERO) {
+            if ((saldoCuota + interesFueraDeTermino <= BigDecimal.ZERO) and (contadorPago > 0)) {
 
                 informe.saldadaElDia = pagos[contadorPago - 1].fecha
 
@@ -309,38 +335,54 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
             informe.montoInicial = cuota.montoInicial
             informe.fechaVencimiento = cuota.fechaVencimiento
-            informe.saldoImpago = saldoCuota + interesFueraDeTermino
+
+            if (menorZero(saldoCuota + interesFueraDeTermino)) {
+                informe.saldoImpago = BigDecimal.ZERO
+            } else {
+                informe.saldoImpago = saldoCuota + interesFueraDeTermino
+            }
 
             lastInforme.add(informe)
 
-            if (lastInforme.last().estado == CuotaInforme.Estado.PAGADA) {
-                estado = Estado.PENDIENTE_DE_FINALIZACION
-            }
+        }
 
+        if (lastInforme.last().estado == CuotaInforme.Estado.PAGADA) {
+            estado = Estado.PENDIENTE_DE_FINALIZACION
         }
 
         return lastInforme
 
     }
 
+    fun determinarFaltanteAPagar(): BigDecimal {
+
+        obtenerSaldos()
+
+        var saldo = BigDecimal.ZERO
+
+        for (cuota in lastInforme) {
+            saldo += cuota.saldoImpago
+        }
+        return saldo
+    }
+
     override fun toString(): String {
 
         var resultado = ""
+        var cuotas = ""
+
+        generarCuotas().forEach { cuota -> cuotas += "Vencimiento: " + cuota.fechaVencimiento + " - Monto: " + cuota.montoInicial + "\n" }
 
         resultado += "Interes: $interesMoroso \n"
         resultado += "Monto otorgado: $monto \n"
         resultado += "Monto entregado:  ${montoEntregado()}  \n"
         resultado += "Legajo del empleado: $legajoEmpleado \n"
         resultado += "Total a pagar: " + totalAPagar() + " \n"
-        resultado += "Plan: $plan \n"
+        resultado += "\nPlan: $plan \n"
         resultado += "Estado: $estado \n"
         resultado += "Fecha creación: $timeStamp \n"
-        resultado += "Cuotas: \n"
-
-        for (cuota in cuotas) {
-            resultado += "Monto: " + cuota.montoInicial + " Vencimiento: " + cuota.fechaVencimiento.toString() + " \n"
-        }
-
+        resultado += "\nCuotas: \n"
+        resultado += cuotas
         resultado += "Pagos: \n"
 
         for (pago in pagos) {
@@ -355,6 +397,8 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
         PENDIENTE, ACTIVO, FINALIZADO, MOROSO, PENDIENTE_DE_FINALIZACION, NOT_SET
     }
 
-
+    companion object Factory {
+        fun create(): Credito = Credito(BigDecimal.ONE, Plan(), -1.00)
+    }
 
 }

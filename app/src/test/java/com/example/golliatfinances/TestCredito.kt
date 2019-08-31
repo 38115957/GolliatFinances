@@ -1,9 +1,9 @@
 package com.example.golliatfinances
 
 import android.app.Application
-import com.example.golliatfinances.Modelo.Credito
-import com.example.golliatfinances.Modelo.Pago
-import com.example.golliatfinances.Modelo.Plan
+import com.example.golliatfinances.modelo.Credito
+import com.example.golliatfinances.modelo.Pago
+import com.example.golliatfinances.modelo.Plan
 import org.junit.Assert
 import org.junit.Test
 import org.threeten.bp.LocalDate
@@ -53,7 +53,6 @@ class TestCredito : Application() {
 
         val credito = Credito(0.035.toBigDecimal(), plan, 10000.00)
         credito.timeStamp = calendar.minusMonths(3)
-        credito.init()
 
         for (i in 1..10 step 2) {
             credito.pagos.add(
@@ -66,7 +65,7 @@ class TestCredito : Application() {
 
         var informe = credito.obtenerSaldos()
 
-        Assert.assertEquals(11793.77788, informe.last().saldoImpago.toDouble(), 0.1)
+        Assert.assertEquals(10879.3373, credito.determinarFaltanteAPagar().toDouble(), 0.1)
 
     }
 
@@ -80,7 +79,6 @@ class TestCredito : Application() {
 
         val credito = Credito(0.035.toBigDecimal(), plan, 10000.00)
         credito.timeStamp = calendar.minusMonths(3)
-        credito.init()
 
         credito.obtenerSaldos()
 
@@ -110,7 +108,6 @@ class TestCredito : Application() {
 
         val credito = Credito(0.035.toBigDecimal(), plan, 10000.00)
         credito.timeStamp = calendar.minusMonths(3)
-        credito.init()
 
         for (i in 1..120) {
             credito.pagos.add(

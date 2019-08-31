@@ -1,4 +1,4 @@
-package com.example.golliatfinances.Modelo
+package com.example.golliatfinances.modelo
 
 class Empleado : Persona()  {
 
