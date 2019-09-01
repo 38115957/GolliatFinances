@@ -1,5 +1,6 @@
 package com.example.golliatfinances.vistas
 
+import android.graphics.Color
 import android.view.View
 import android.widget.AdapterView
 import androidx.lifecycle.LifecycleOwner
@@ -10,6 +11,7 @@ import com.example.golliatfinances.DatosPersistentes
 import com.example.golliatfinances.databinding.PagarCuotaBinding
 import com.example.golliatfinances.modelo.Cliente
 import com.example.golliatfinances.modelo.Credito
+import com.example.golliatfinances.utils.TextUtils
 
 class VMPagarCuota : ViewModel() {
 
@@ -50,5 +52,31 @@ class VMPagarCuota : ViewModel() {
         liveDataCliente.postValue(cliente)
     }
 
+
+    fun pagarCuota(view: View) {
+
+        val monto = TextUtils.toBigDecimal(binding.montoAPagarCredito.text.toString())
+
+        val posCredito = binding.spinnerCredito.selectedItemPosition
+
+        if (cliente.credito(posCredito).grabarPago(monto)) {
+
+            liveDataCuotas.postValue(cliente.credito(posCredito))
+            datosPersistentes.write(cliente)
+
+            binding.montoAPagarCredito.setHelperText("Monto total que desea pagar el cliente")
+            binding.montoAPagarCredito.helperTextColor = Color.GRAY
+
+        } else {
+            binding.montoAPagarCredito.setHelperText(
+                "El monto exede las deudas actuales! (" + cliente.credito(
+                    posCredito
+                ).determinarFaltanteAPagar() + ")"
+            )
+            binding.montoAPagarCredito.helperTextColor = Color.RED
+        }
+
+
+    }
 
 }

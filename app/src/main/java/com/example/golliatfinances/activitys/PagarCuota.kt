@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.golliatfinances.BR
 import com.example.golliatfinances.R
 import com.example.golliatfinances.adapters.AdapterCuotas
 import com.example.golliatfinances.databinding.PagarCuotaBinding
@@ -27,15 +28,15 @@ class PagarCuota : AppCompatActivity() {
         //Inicia el View model de esta actividad
         viewModel = ViewModelProviders.of(this).get(VMPagarCuota::class.java)
         viewModel.binding = binding
-        viewModel.init(this)
 
-        //  binding.setVariable(BR.VMCrearCredito, viewModel)
+         binding.setVariable(BR.VMPagarCuota, viewModel)
 
         if (intent.hasExtra("dni")) {
             viewModel.dni = intent.getStringExtra("dni")
         }
 
         binding.lifecycleOwner = this
+        viewModel.init(this)
 
         initListeners()
     }

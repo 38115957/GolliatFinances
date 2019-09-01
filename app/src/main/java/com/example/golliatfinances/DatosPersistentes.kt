@@ -90,6 +90,7 @@ class DatosPersistentes {
     fun read(tipo: Plan.Modalidad) {
         doAsync {
             val nombres = arrayListOf(String())
+            nombres.clear()
 
             Paper.book(plan_db).allKeys.forEach {
 

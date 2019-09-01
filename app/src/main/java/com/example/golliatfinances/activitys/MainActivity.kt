@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         //Inicia los servicios de Fecha y DB
         AndroidThreeTen.init(this)
         Paper.init(this)
+      //  Paper.book("cliente").destroy()
 
         //Inicia el View model de esta actividad
         viewModel = ViewModelProviders.of(this).get(VMFachada::class.java)

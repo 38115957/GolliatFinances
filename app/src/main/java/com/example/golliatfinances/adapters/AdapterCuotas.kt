@@ -106,9 +106,9 @@ class AdapterCuotas(val items: List<CuotaInforme>, val context: Context) :
 
         innerListView?.layoutParams = params
 
-        innerListView?.setAdapter(adapter);
+        innerListView?.setAdapter(adapter)
 
-        convertViewnew?.invalidate();
+        convertViewnew?.invalidate()
 
         return convertViewnew!!
 

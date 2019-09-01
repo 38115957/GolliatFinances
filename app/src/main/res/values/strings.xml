@@ -39,6 +39,7 @@
     <string name="pagar_cuota">Pagar cuota</string>
     <string name="seleccione_el_credito">Seleccione el credito</string>
     <string name="estado_actual">Estado actual:</string>
+    <string name="pagar">Pagar</string>
 
     <string-array name="modalidades">
         <item>Adelantada</item>

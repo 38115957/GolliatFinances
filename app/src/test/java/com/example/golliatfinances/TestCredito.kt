@@ -13,7 +13,7 @@ class TestCredito : Application() {
     override fun onCreate() {
         super.onCreate()
     }
-
+/*
 
     fun init() {
 
@@ -135,5 +135,5 @@ class TestCredito : Application() {
         Assert.assertEquals(2, credito.plan.numeroDeCuotas())
 
     }
-
+*/
 }

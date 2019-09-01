@@ -103,6 +103,8 @@ class VMCrearCredito : ViewModel() {
 
         binding.datosDelCredito.setText(credito.toString())
 
+
+
     }
 
     fun notificarCredito(view: View) {
