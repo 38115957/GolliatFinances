@@ -1,9 +1,12 @@
 package com.example.golliatfinances.vistas
 
+import android.net.Uri
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.golliatfinances.DatosPersistentes
 import com.example.golliatfinances.activitys.CrearCredito
+import com.example.golliatfinances.activitys.PagarCuota
 import com.example.golliatfinances.databinding.ActivityMainBinding
 import com.example.golliatfinances.modelo.Cliente
 import com.example.golliatfinances.soapConnector.ResultadoEstadoCliente
@@ -12,9 +15,11 @@ import com.example.golliatfinances.utils.TextUtils
 
 class VMFachada : ViewModel() {
 
-    val liveDataActivity: MutableLiveData<Any> = MutableLiveData()
+    val liveDataActivity: MutableLiveData<Actividades> = MutableLiveData()
     val livedataBuscar: MutableLiveData<String> = MutableLiveData()
     val livedataGestionar: MutableLiveData<String> = MutableLiveData()
+    var dni = ""
+
     lateinit var binding: ActivityMainBinding
 
     var sinDeudas = false
@@ -25,7 +30,7 @@ class VMFachada : ViewModel() {
 
     fun crearCredito(view: View) {
 
-        liveDataActivity.postValue(CrearCredito::class.java)
+        liveDataActivity.postValue(Actividades.CrearCredito)
 
     }
 
@@ -48,7 +53,7 @@ class VMFachada : ViewModel() {
         binding.buttonCliente.isEnabled = false
 
         //Obtiene el DNI como texto
-        val dni = binding.buscarDni.text.toString()
+        dni = binding.buscarDni.text.toString()
 
         livedataBuscar.postValue(dni)
     }
@@ -121,14 +126,17 @@ class VMFachada : ViewModel() {
     }
 
     fun pagarCuota(view: View) {
-        //  liveDataActivity.postValue(CrearCredito::class.java)
-
+        liveDataActivity.postValue(Actividades.PagarCuota)
     }
 
     fun gestionarPlanes(view: View) {
+
         //   liveDataActivity.postValue(CrearCredito::class.java)
 
     }
 
+    enum class Actividades {
+        CrearCredito, PagarCuota
+    }
 
 }

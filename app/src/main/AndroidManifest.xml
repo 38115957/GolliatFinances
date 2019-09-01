@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activitys.CrearCredito" />
+        <activity android:name=".activitys.PagarCuota" />
         <activity android:name=".activitys.GestionarCliente" />
         <activity android:name=".activitys.MainActivity">
             <intent-filter>

@@ -63,7 +63,7 @@ class TestCredito : Application() {
             )
         }
 
-        var informe = credito.obtenerSaldos()
+        var informe = credito.obtenerInforme()
 
         Assert.assertEquals(10879.3373, credito.determinarFaltanteAPagar().toDouble(), 0.1)
 
@@ -80,7 +80,7 @@ class TestCredito : Application() {
         val credito = Credito(0.035.toBigDecimal(), plan, 10000.00)
         credito.timeStamp = calendar.minusMonths(3)
 
-        credito.obtenerSaldos()
+        credito.obtenerInforme()
 
         Assert.assertEquals(Credito.Estado.MOROSO, credito.estado)
 
@@ -118,7 +118,7 @@ class TestCredito : Application() {
             )
         }
 
-        credito.obtenerSaldos()
+        credito.obtenerInforme()
 
         Assert.assertEquals(Credito.Estado.PENDIENTE_DE_FINALIZACION, credito.estado)
 

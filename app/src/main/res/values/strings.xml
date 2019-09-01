@@ -33,10 +33,12 @@
     <string name="generar_credito">Generar credito</string>
     <string name="guardar_credito">Guardar credito</string>
     <string name="crear_credito">Crear credito</string>
-    <string name="pagar_cuota">Pagar cuota</string>
     <string name="gestionar_cliente">Gestionar Cliente</string>
     <string name="guardar_cliente">Guardar cliente</string>
     <string name="no_enought_plans">NO SE CUENTAN CON LA CANTIDAD MÍNIMA DE PLANES PARA OFRECER EL SERVICIO</string>
+    <string name="pagar_cuota">Pagar cuota</string>
+    <string name="seleccione_el_credito">Seleccione el credito</string>
+    <string name="estado_actual">Estado actual:</string>
 
     <string-array name="modalidades">
         <item>Adelantada</item>

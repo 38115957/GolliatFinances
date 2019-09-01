@@ -5,8 +5,21 @@ import java.math.BigDecimal
 
 class Cliente : Persona() {
 
+    fun listaCreditos(): ArrayList<String> {
+        val creditosNombres = arrayListOf(String())
+        creditos.forEach { creditosNombres.add(it.nombreString()) }
+        return creditosNombres
+    }
+
+    fun credito(index:Int): Credito {
+        try {
+            return creditos[index]
+        }catch (ex :IndexOutOfBoundsException){
+            return Credito.create()
+        }
+    }
+
     var sueldo = BigDecimal.ZERO
-    var estado = ResultadoEstadoCliente()
 
     fun isNull(): Boolean {
         return (super.apellidos.isEmpty() or super.nombres.isEmpty())
@@ -48,14 +61,14 @@ fun textoCliente(): String {
         var saldoActual = BigDecimal.ZERO
         for (credito in creditos) {
 
-            saldoActual += credito.obtenerSaldos().last().saldoImpago
+            saldoActual += credito.obtenerInforme().last().saldoImpago
 
         }
         return saldoActual
     }
 
     override fun toString(): String {
-        return "Cliente(sueldo=$sueldo, estado=$estado, creditos=$creditos) ${super.toString()}"
+        return "Cliente(sueldo=$sueldo, creditos=$creditos) ${super.toString()}"
     }
 
 

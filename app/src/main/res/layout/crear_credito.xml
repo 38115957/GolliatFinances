@@ -27,7 +27,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:layout_weight="1"
                 android:text="@string/crear_nuevo_credito"
                 android:textAlignment="center"
@@ -167,6 +167,7 @@
                 android:layout_marginBottom="32dp"
                 android:backgroundTint="@color/primary"
                 android:text="@string/guardar_credito"
+                android:onClick="@{v->VMCrearCredito.guardarCredito(v)}"
                 android:textColor="@color/icons" />
 
         </LinearLayout>

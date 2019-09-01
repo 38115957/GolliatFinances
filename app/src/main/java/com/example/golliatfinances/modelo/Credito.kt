@@ -35,7 +35,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
     fun grabarPago(montoPagado: BigDecimal): Boolean {
 
-        if (obtenerSaldos().last().saldoImpago < montoPagado) {
+        if (obtenerInforme().last().saldoImpago < montoPagado) {
             return false
         }
 
@@ -184,7 +184,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
     }
 
-    fun obtenerSaldos(): ArrayList<CuotaInforme> {
+    fun obtenerInforme(): ArrayList<CuotaInforme> {
         if (lastInforme.isEmpty()) {
             return determinarSaldos()
         }
@@ -356,7 +356,7 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
 
     fun determinarFaltanteAPagar(): BigDecimal {
 
-        obtenerSaldos()
+        obtenerInforme()
 
         var saldo = BigDecimal.ZERO
 
@@ -364,6 +364,10 @@ class Credito(val interesMoroso: BigDecimal, val plan: Plan, monto: Double) {
             saldo += cuota.saldoImpago
         }
         return saldo
+    }
+
+    fun nombreString(): String {
+        return plan.identificador + " - " + monto.toString()
     }
 
     override fun toString(): String {
