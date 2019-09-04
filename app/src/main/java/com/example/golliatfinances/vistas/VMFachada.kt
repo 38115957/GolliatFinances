@@ -1,24 +1,25 @@
 package com.example.golliatfinances.vistas
 
-import android.net.Uri
 import android.view.View
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.golliatfinances.DatosPersistentes
-import com.example.golliatfinances.activitys.CrearCredito
-import com.example.golliatfinances.activitys.PagarCuota
 import com.example.golliatfinances.databinding.ActivityMainBinding
 import com.example.golliatfinances.modelo.Cliente
 import com.example.golliatfinances.soapConnector.ResultadoEstadoCliente
+import com.example.golliatfinances.soapConnector.ServicioPublicoCredito
 import com.example.golliatfinances.utils.TextUtils
 
 
 class VMFachada : ViewModel() {
 
     val liveDataActivity: MutableLiveData<Actividades> = MutableLiveData()
-    val livedataBuscar: MutableLiveData<String> = MutableLiveData()
-    val livedataGestionar: MutableLiveData<String> = MutableLiveData()
     var dni = ""
+    var codFinanciera = ""
+    val datosPersistentes = DatosPersistentes()
+    val servicioPublicoCredito = ServicioPublicoCredito()
 
     lateinit var binding: ActivityMainBinding
 
@@ -27,6 +28,19 @@ class VMFachada : ViewModel() {
     var cuentaCreada = false
     var pocosCreditosLocales = false
 
+    fun init(lifecycleOwner: LifecycleOwner, codFinanciera: String) {
+        datosPersistentes.createPlanes()
+
+        datosPersistentes.liveDataCliente.observe(lifecycleOwner, Observer {
+            mostrarCliente(it)
+        })
+
+        servicioPublicoCredito.liveDataCliente.observe(lifecycleOwner, Observer {
+            estadoCliente(it)
+        })
+
+        this.codFinanciera = codFinanciera
+    }
 
     fun crearCredito(view: View) {
 
@@ -34,9 +48,7 @@ class VMFachada : ViewModel() {
 
     }
 
-
-    fun buscarPersona(view: View?) {
-
+    fun limpiarCliente() {
         //Limpia el texto de estado
         binding.textEstado.setText("")
 
@@ -51,11 +63,23 @@ class VMFachada : ViewModel() {
         binding.buttonCrearCredito.isEnabled = false
         binding.buttonPagarCuota.isEnabled = false
         binding.buttonCliente.isEnabled = false
+    }
+
+    fun buscarPersona(view: View?) {
+
+        limpiarCliente()
 
         //Obtiene el DNI como texto
         dni = binding.buscarDni.text.toString()
 
-        livedataBuscar.postValue(dni)
+        //Busca si el cliente existe en esta financiera, cuando lo encuentra devuelve
+        datosPersistentes.read(dni, DatosPersistentes.Tipo.CLIENTE)
+
+        //Obtiene el estado del cliente desde el servicio web, cuando lo encuentra lo devuelve
+        servicioPublicoCredito.obtenerEstadoCliente(
+            TextUtils.toBigDecimal(dni).toInt(),
+            codFinanciera
+        )
     }
 
     fun estadoCliente(it: ResultadoEstadoCliente) {
@@ -113,30 +137,18 @@ class VMFachada : ViewModel() {
         }
     }
 
-    fun gestionarClienteCompletado() {
-        cuentaCreada = true
-
-        if (sinDeudas and pocosCreditos and cuentaCreada and pocosCreditosLocales) {
-            binding.buttonCrearCredito.isEnabled = true
-        }
-    }
-
     fun gestionarCliente(view: View?) {
-        livedataGestionar.postValue(binding.buscarDni.text.toString())
+        liveDataActivity.postValue(Actividades.GestionarCliente)
+        limpiarCliente()
     }
 
     fun pagarCuota(view: View) {
         liveDataActivity.postValue(Actividades.PagarCuota)
     }
 
-    fun gestionarPlanes(view: View) {
-
-        //   liveDataActivity.postValue(CrearCredito::class.java)
-
-    }
 
     enum class Actividades {
-        CrearCredito, PagarCuota
+        CrearCredito, PagarCuota, GestionarCliente
     }
 
 }

@@ -1,6 +1,4 @@
 package com.example.golliatfinances.modelo
-
-import com.example.golliatfinances.soapConnector.ResultadoEstadoCliente
 import java.math.BigDecimal
 
 class Cliente : Persona() {

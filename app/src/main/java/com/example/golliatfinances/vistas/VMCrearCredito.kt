@@ -2,6 +2,7 @@ package com.example.golliatfinances.vistas
 
 import android.view.View
 import android.widget.AdapterView
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -11,17 +12,19 @@ import com.example.golliatfinances.modelo.Credito
 import com.example.golliatfinances.modelo.Financiera
 import com.example.golliatfinances.modelo.Plan
 import com.example.golliatfinances.utils.TextUtils
+import com.google.android.material.snackbar.Snackbar
+import java.math.BigDecimal
 
 class VMCrearCredito : ViewModel() {
 
+    val livedataPlanesAdapter: MutableLiveData<ArrayList<String>> = MutableLiveData()
+    val livedataClose: MutableLiveData<Boolean> = MutableLiveData()
+
     var plan = Plan()
     var credito = Credito.create()
-
-    val livedataTipoPlan: MutableLiveData<Plan.Modalidad> = MutableLiveData()
-    val livedataPlan: MutableLiveData<String> = MutableLiveData()
-    val livedataCredito: MutableLiveData<Credito> = MutableLiveData()
     lateinit var binding: CrearCreditoBinding
     val datosPersistentes = DatosPersistentes()
+    var dni = ""
 
     fun init() {
 
@@ -57,8 +60,7 @@ class VMCrearCredito : ViewModel() {
                 position: Int,
                 id: Long
             ) {
-
-                livedataPlan.postValue(binding.spinnerPlanes.selectedItem.toString())
+                datosPersistentes.read(binding.spinnerPlanes.selectedItem.toString(), DatosPersistentes.Tipo.PLAN)
 
             }
 
@@ -73,10 +75,12 @@ class VMCrearCredito : ViewModel() {
     fun setPlanes(pos: Int) {
 
         if (pos == 0) {
-            livedataTipoPlan.postValue(Plan.Modalidad.ADELANTADA)
+            datosPersistentes.read(Plan.Modalidad.ADELANTADA)
+
 
         } else {
-            livedataTipoPlan.postValue(Plan.Modalidad.VENCIDA)
+            datosPersistentes.read(Plan.Modalidad.VENCIDA)
+
 
         }
 
@@ -104,16 +108,61 @@ class VMCrearCredito : ViewModel() {
         binding.datosDelCredito.setText(credito.toString())
 
 
-
     }
 
     fun notificarCredito(view: View) {
-        livedataCredito.postValue(Credito.create())
+
+        añadirCredito(Credito.create())
+
     }
 
     fun guardarCredito(view: View) {
-        livedataCredito.postValue(credito)
 
+        añadirCredito(credito)
+
+    }
+
+    fun añadirCredito(credito: Credito) {
+        if (credito.monto < BigDecimal.ZERO) {
+            generarCredito(datosPersistentes.financiera)
+        } else {
+
+            datosPersistentes.addCredito(dni, credito)
+
+            Snackbar.make(
+                binding.root,
+                ("Guardado con éxito"), Snackbar.LENGTH_LONG
+            ).show()
+
+            livedataClose.postValue(true)
+        }
+    }
+
+    fun init(lifecycleOwner: LifecycleOwner) {
+        datosPersistentes.liveDataPlan.observe(lifecycleOwner, Observer {
+
+            setData(it)
+
+        })
+
+
+        datosPersistentes.livedataPlanesAdapter.observe(lifecycleOwner, Observer {
+
+            if (it.size > 1) {
+
+                livedataPlanesAdapter.postValue(it)
+
+            } else {
+                Snackbar.make(
+                    binding.root,
+                    "NO SE CUENTAN CON LA CANTIDAD MÍNIMA DE PLANES PARA OFRECER EL SERVICIO",
+                    Snackbar.LENGTH_LONG
+                ).show()
+
+
+            }
+
+        })
     }
 
 
