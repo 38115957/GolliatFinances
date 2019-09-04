@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/pago_item_heigt"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/icons"
+    android:padding="4dp"
+    android:layout_margin="4dp"
+    android:orientation="horizontal"
+    tools:context="com.example.golliatfinances.adapters.AdapterPagos">
+
+    <TextView
+        android:id="@+id/monto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="123123" />
+
+    <TextView
+        android:id="@+id/fecha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="2019/18/9" />
+</LinearLayout>

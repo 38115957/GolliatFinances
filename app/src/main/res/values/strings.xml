@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GolliatFinances</string>
+    <string name="app_name">Golliat Finances</string>
     <string name="NAMESPACE">http://ISTP1.Service.Contracts.Service</string>
     <string name="URL_SERVICE">http://ds.dyndns.org:9000/ServicioPublicoCredito</string>
     <string name="METHOD_OEC">ObtenerEstadoCliente</string>
@@ -7,4 +7,46 @@
     <string name="cod_fin_name">codigoFinanciera</string>
     <string name="dni_name">dni</string>
     <string name="codigo_financiera">"67f583b3-8858-422f-b207-611634105a90"</string>
+    <string name="fecha">Fecha</string>
+    <string name="monto">Monto</string>
+
+    <string name="dniDB">67f583b3</string>
+
+
+    <string name="numCuota">Número de cuota: %1$d</string>
+    <string name="montoInicial">Monto: %1$s</string>
+    <string name="fechaVencimiento">Número de cuota: %1$s! You have %2$d new messages.</string>
+    <string name="estado">Estado: %1$s</string>
+    <string name="montoImpago">%1$s: Impago</string>
+    <string name="diasVencido">Dias vencido: %1$s</string>
+    <string name="montoRecargo">Recargo: %1$s</string>
+    <string name="cuota_inicial">Cuota inicial</string>
+    <string name="buscar">Buscar</string>
+    <string name="gestionar_planes">Gestionar Planes</string>
+    <string name="ingrese_el_dni_del_cliente">Ingrese el DNI del cliente</string>
+    <string name="icon">icon</string>
+
+    <string name="estadoCliente">El cliente posee %1$s creditos y %2$s posee deudas</string>
+    <string name="modalidad">Modalidad:</string>
+    <string name="crear_nuevo_credito">Crear nuevo credito</string>
+    <string name="plan_de_referencia">Plan de referencia:</string>
+    <string name="generar_credito">Generar credito</string>
+    <string name="guardar_credito">Guardar credito</string>
+    <string name="crear_credito">Crear credito</string>
+    <string name="gestionar_cliente">Gestionar Cliente</string>
+    <string name="guardar_cliente">Guardar cliente</string>
+    <string name="no_enought_plans">NO SE CUENTAN CON LA CANTIDAD MÍNIMA DE PLANES PARA OFRECER EL SERVICIO</string>
+    <string name="pagar_cuota">Pagar cuota</string>
+    <string name="seleccione_el_credito">Seleccione el credito</string>
+    <string name="estado_actual">Estado actual:</string>
+    <string name="pagar">Pagar</string>
+
+    <string-array name="modalidades">
+        <item>Adelantada</item>
+        <item>Vencida</item>
+    </string-array>
+
+    <string-array name="planes">
+    </string-array>
+
 </resources>

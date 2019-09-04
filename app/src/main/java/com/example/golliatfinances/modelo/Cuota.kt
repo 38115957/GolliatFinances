@@ -1,4 +1,4 @@
-package com.example.golliatfinances.Modelo
+package com.example.golliatfinances.modelo
 
 import java.math.BigDecimal
 import org.threeten.bp.LocalDate
@@ -9,7 +9,7 @@ class Cuota(val fechaVencimiento: LocalDate, val montoInicial: BigDecimal) {
 
 
     override fun toString(): String {
-        return "Cuota(fechaVencimiento=$fechaVencimiento, montoInicial=$montoInicial, cantidadDeDiasMoroso=$cantidadDeDiasMoroso)"
+        return "Vencimiento: $fechaVencimiento, Monto: $montoInicial"
     }
 
 

@@ -1,5 +1,9 @@
 package com.example.golliatfinances
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Observer
 import com.example.golliatfinances.soapConnector.ResultadoEstadoCliente
 import com.example.golliatfinances.soapConnector.ServicioPublicoCredito
 import org.junit.Test
@@ -10,6 +14,7 @@ import org.ksoap2.serialization.SoapObject
 import org.ksoap2.SoapEnvelope
 import org.ksoap2.serialization.SoapSerializationEnvelope
 import org.ksoap2.transport.HttpTransportSE
+import org.mockito.Mockito.mock
 
 
 /**
@@ -18,6 +23,9 @@ import org.ksoap2.transport.HttpTransportSE
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class TestApi {
+
+    val servicioPublicoCredito = ServicioPublicoCredito()
+    val lifecycle = LifecycleRegistry(mock(LifecycleOwner::class.java))
 
 
     @Test
@@ -38,7 +46,7 @@ class TestApi {
         envelope.setOutputSoapObject(request2)
         envelope.addMapping(NAMESPACE, "ResultadoEstadoCliente", ResultadoEstadoCliente().javaClass)
 
-        val androidHttpTransport = HttpTransportSE(URL,200)
+        val androidHttpTransport = HttpTransportSE(URL, 200)
         var response = SoapObject();
 
         try {
@@ -52,33 +60,6 @@ class TestApi {
 
 
         assert(response.toString().contains("ConsultaValida=true"))
-    }
-
-    @Test
-    fun testObtenerEstadoClienteService() {
-
-        val reponse = ServicioPublicoCredito().obtenerEstadoCliente(33000013, "67f583b3-8858-422f-b207-611634105a90")
-
-        assert(reponse.ConsultaValida)
-
-    }
-
-    @Test
-    fun InformarCreditoOtorgadoService() {
-
-        val reponse = ServicioPublicoCredito().informarCreditoOtorgado(33000013, "67f583b3-8858-422f-b207-611634105a90","codCred",10000)
-
-        assert(reponse.operacionValida)
-
-    }
-
-    @Test
-    fun InformarCreditoFinalizado() {
-
-        val reponse = ServicioPublicoCredito().informarCreditoFinalizado(33000013, "67f583b3-8858-422f-b207-611634105a90","codCred")
-
-        assert(reponse.operacionValida)
-
     }
 
 
