@@ -68,8 +68,6 @@ class VMCrearCredito : ViewModel() {
 
             }
         }
-
-
     }
 
     fun setPlanes(pos: Int) {
